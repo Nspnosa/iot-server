@@ -1,0 +1,317 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 80%;
+  height: 80%;
+
+  max-width: 1080px;
+  max-height: 900px;
+
+  min-width: 700px;
+  min-height: 500px;
+
+  border: 1px solid #ccc;
+  box-shadow: 0 8px 6px -6px #ddd;
+  border-radius: 3px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.device-container {
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  width: 350px;
+  height: 97px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  /* margin-bottom: 5px; */
+  margin-bottom: -1px;
+}
+
+.device-button-container {
+  /* border: 2px solid red; */
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+}
+
+.device-button-on {
+  border: 1px solid #eee;
+  padding: 0;
+  background: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: 0 8px 6px -6px #aaa;
+  font-style: italic;
+  background-color: seagreen;
+  color: white;
+}
+.device-button-off {
+  border: 1px solid #eee;
+  padding: 0;
+  background: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: 0 8px 6px -6px #aaa;
+  font-style: italic;
+  background-color: #8b2e34;
+  /* background-color: tomato; */
+  color: white;
+}
+
+.device-button-on:hover {
+  /* box-shadow: 0 8px 6px -6px #aaa; */
+  border: 1px solid #888;
+}
+
+.device-button-off:hover {
+  /* box-shadow: 0 8px 6px -6px #aaa; */
+  border: 1px solid #888;
+}
+
+.device-button-on:active {
+  border: 2px solid #888;
+  box-shadow: none;
+}
+
+.device-button-off:active {
+  border: 2px solid #888;
+  box-shadow: none;
+}
+
+.device-info {
+  /* border: 2px solid red; */
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.device-info-tag {
+  font-weight: 500;
+  width: 80px;
+}
+
+.device-info-info {
+  margin: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.device-info-element {
+  outline: none;
+  margin-left: 10px;
+  width: 80px;
+}
+
+.device-status-element-off {
+  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  /* background-color: tomato; */
+  background-color: #8b2e34;
+  display: inline-block;
+  margin: auto;
+  margin-left: 5px;
+}
+.device-status-element-on {
+  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  margin: auto;
+  margin-left: 5px;
+  background-color: seagreen;
+  display: inline-block;
+}
+.device-info-element-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.user-login-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 400px;
+  box-shadow: 0 8px 6px -6px #ddd;
+}
+
+.user-signup-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 400px;
+  box-shadow: 0 8px 6px -6px #ddd;
+}
+
+.user-login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 85%;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+
+  background-image: linear-gradient(
+    to right,
+    black 33%,
+    rgba(255, 255, 255, 0) 0%
+  );
+  background-position: bottom;
+  background-size: 10px 1px;
+  background-repeat: repeat-x;
+}
+
+.user-signup-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-login-form-div {
+  margin-bottom: 10px;
+  width: fit-content;
+  text-align: center;
+  height: 40px;
+  width: 280px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.user-login-form-div-input {
+  outline: none;
+  border: none;
+  width: 280px;
+  height: 40px;
+  background-color: #ddd;
+  font-size: medium;
+}
+
+.user-login-form-div-input:focus {
+  border: 2px solid rgb(26, 115, 232);
+}
+
+.user-login-form-div-button {
+  width: 280px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  background-color: rgb(26, 115, 232);
+  border: none;
+  outline: none;
+}
+
+.user-login-form-div-button:hover {
+  border: 1px solid #666;
+  background-color: rgb(1, 91, 209);
+}
+
+.user-login-form-div-button:active {
+  border: 1px solid #666;
+  background-color: rgb(39, 130, 250);
+}
+
+.user-create-form-div-button {
+  width: 280px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  border: none;
+  outline: none;
+  background-color: #efefef;
+}
+
+.user-create-form-div-button:hover {
+  border: 1px solid #666;
+  background-color: #d1d1d1;
+}
+
+.user-create-form-div-button:active {
+  border: 1px solid #666;
+  background-color: #f8f6f6;
+}
+
+.user-login-form-div-button-remember {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  padding: 0;
+  border: none;
+  outline: none;
+  margin-right: 10px;
+}
+
+.user-login-form-div-button-remember-on:hover {
+  box-shadow: 0 8px 6px -6px #aaa;
+  border: 1px solid #888;
+}
+.user-login-form-div-button-remember-off:hover {
+  box-shadow: 0 8px 6px -6px #aaa;
+  border: 1px solid #888;
+}
+
+.user-login-form-div-button-remember-on:active {
+  border: 2px solid #888;
+  box-shadow: none;
+}
+
+.user-login-form-div-button-remember-off:active {
+  border: 2px solid #888;
+  box-shadow: none;
+}
+
+.user-login-form-div-button-remember-on {
+  background-color: seagreen;
+}
+
+.user-login-form-div-button-remember-off {
+  background-color: #8b2e34;
+}
+.user-login-title {
+  margin: 0;
+  margin-bottom: 20px;
+}
+.user-login-lost-credentials-container {
+  margin-top: 10px;
+  text-align: center;
+}
