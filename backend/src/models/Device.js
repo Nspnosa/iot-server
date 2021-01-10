@@ -1,20 +1,21 @@
 const mongoose = require('mongoose');
 
+//device info schema
 const DeviceSchema = mongoose.Schema({
   deviceName: {
-    require: true,
+    required: true,
     type: String,
   },
   deviceID: {
-    require: true,
+    required: true,
     type: String,
   },
   user: {
-    require: true,
+    required: true,
     type: String,
   },
   type: {
-    require: true,
+    required: true,
     type: String,
   },
   subUsers: {
