@@ -7,10 +7,11 @@ const Device = require('../models/Device');
 const router = express.Router();
 const DeviceID = require('../models/DeviceID');
 const nodemailer = require('nodemailer');
+const { json } = require('express');
 
 async function sendEmailVerification(userID, userEmail) {
   //generate token for email
-  const emailToken = jwt.sign({ _id: userID }, process.env.JWT_EMAIL_SECRET);
+  const emailToken = jwt.sign({ _id: userID }, process.env.JWT_SECRET);
   console.log(process.env.VERIFICATION_EMAIL);
   console.log(process.env.VERIFICATION_PASS);
   let transporter = nodemailer.createTransport({
@@ -123,22 +124,38 @@ router.post('/login', async (req, res) => {
 router.get('/devices', async (req, res) => {
   const userID = res.locals._id;
   //TODO: get and current device status
-  const ownedDevices = await Device.find({ user: userID });
-  let sharedDevices = await Device.find({ subUsers: userID });
-  sharedDevices = sharedDevices.map((device) => {
-    device.subUsers = [userID];
-    return device;
+
+  const userFromDB = await User.findById(userID);
+  let ownedDevices = await Device.find({ user: userID });
+
+  let ownedDevicesModified = ownedDevices.map((device) => {
+    return { ...device.toObject(), owned: true };
   });
 
-  return res.json({ msg: '', devices: [...ownedDevices, ...sharedDevices] });
+  let sharedDevices = await Device.find({ subUsers: userFromDB.email });
+  let sharedDevicesModified = sharedDevices.map((device) => {
+    return { ...device.toObject(), owned: false };
+  });
+
+  sharedDevices = sharedDevices.map((device) => {
+    device.subUsers = [userFromDB.email];
+    return device;
+  });
+  console.log({ devices: [...ownedDevicesModified, ...sharedDevicesModified] });
+  return res.json({
+    msg: '',
+    devices: [...ownedDevicesModified, ...sharedDevicesModified],
+  });
+  // return res.json({ msg: '', devices: [...ownedDevices, ...sharedDevices] });
 });
 
 const createDeviceSchema = Joi.object({
-  deviceName: Joi.string().max(20).required(),
+  deviceName: Joi.string().min(3).max(20).required(),
   deviceID: Joi.string().min(7).max(14).required(),
 });
 
 router.post('/devices', async (req, res) => {
+  console.log(req.body);
   const validationRes = createDeviceSchema.validate(req.body);
 
   if (validationRes.error) {
@@ -164,6 +181,7 @@ router.post('/devices', async (req, res) => {
     deviceID: req.body.deviceID,
     user: userID,
     type: deviceFromPool.deviceType,
+    userEmail: userInfo.userEmail,
   });
 
   await newDevice.save();
@@ -303,10 +321,7 @@ router.put('/devices/:id', async (req, res) => {
 router.get('/verifyemail/:token', async (req, res) => {
   try {
     const url = `http://${process.env.HOST}:${process.env.PORT_FRONT_END}/login`;
-    const decodedToken = jwt.verify(
-      req.params.token,
-      process.env.JWT_EMAIL_SECRET
-    );
+    const decodedToken = jwt.verify(req.params.token, process.env.JWT_SECRET);
     const dbUser = await User.findById(decodedToken._id);
     console.log(decodedToken);
     console.log(dbUser);
@@ -324,7 +339,7 @@ router.get('/verifyemail/:token', async (req, res) => {
 
 async function sendLoginRecoveryEmail(userID, userEmail) {
   //generate token for email recovery
-  const emailToken = jwt.sign({ _id: userID }, process.env.JWT_EMAIL_SECRET);
+  const emailToken = jwt.sign({ _id: userID }, process.env.JWT_SECRET);
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -391,7 +406,7 @@ const resetAccountSchema = Joi.object({
 
 router.post('/reset', async (req, res) => {
   try {
-    const validationRes = loginRecoverySchema.validate(req.body);
+    const validationRes = resetAccountSchema.validate(req.body);
     if (validationRes.error) {
       return res
         .status(400)
@@ -400,9 +415,9 @@ router.post('/reset', async (req, res) => {
 
     const url = `http://${process.env.HOST}:${process.env.PORT_FRONT_END}/login`;
     const dbUser = await User.findById(res.locals._id, { password: 1 });
+    console.log(dbUser);
     dbUser.password = bcrypt.hashSync(req.body.password, 10);
     await dbUser.save();
-    console.log();
     return res.json({ msg: 'password reset' });
   } catch {
     return res.status(400).json({ msg: 'invalid request to reset password' });

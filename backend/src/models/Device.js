@@ -23,6 +23,10 @@ const DeviceSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  userEmail: {
+    required: true,
+    type: String,
+  },
 });
 
 module.exports = mongoose.model('Device', DeviceSchema);

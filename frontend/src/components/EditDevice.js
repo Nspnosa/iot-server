@@ -8,6 +8,7 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
     subUsers: completeDeviceInfo.subUsers,
   });
 
+  const token = localStorage.getItem('iot-server-token');
   const [msg, setMsg] = useState('');
   const props = useSpring({ opacity: 1, from: { opacity: 0 } });
 
@@ -21,6 +22,25 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
   }
 
   async function handleOnClick(event) {}
+
+  async function removeDevice(event) {
+    console.log('remove device');
+    event.preventDefault();
+    await fetch(`/api/devices/${completeDeviceInfo.deviceID}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((data) => Promise.all([data.json(), data.status]))
+      .then(([data, status]) => {
+        if (status !== 200) {
+          setMsg(data.msg);
+        } else {
+          //trigger a rerender of devices
+        }
+      });
+  }
 
   console.log('hello');
   return (
@@ -38,45 +58,57 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
               onChange={handleOnChange}
               value={deviceInfo.deviceName}
               name="deviceName"
+              disabled={!completeDeviceInfo.owned}
             />
           </div>
-          <div className="user-login-form-div">
-            <input
-              required={true}
-              placeholder="New user"
-              className="user-login-form-div-input"
-              type="email"
-              onChange={handleOnChange}
-              value={deviceInfo.newUser}
-              name="newUser"
-            />
-          </div>
-          {deviceInfo.subUsers.map((user, index) => {
-            return (
-              <div key={user} className="user-login-form-div">
-                <p>{user}</p>
-                <button
-                  onClick={(event) => {
-                    setDeviceInfo({
-                      ...deviceInfo,
-                      subUsers: deviceInfo.subUsers.filter(
-                        (subUser) => subUser !== user
-                      ),
-                    });
-                  }}
-                >
-                  X
-                </button>
-              </div>
-            );
-          })}
+          {completeDeviceInfo.owned ? (
+            <div className="user-login-form-div">
+              <input
+                placeholder="New user"
+                className="user-login-form-div-input"
+                type="email"
+                onChange={handleOnChange}
+                value={deviceInfo.newUser}
+                name="newUser"
+              />
+            </div>
+          ) : null}
+
+          {completeDeviceInfo.owned ? (
+            deviceInfo.subUsers.map((user, index) => {
+              return (
+                <div key={user} className="user-login-form-div">
+                  <p>{user}</p>
+                  <button
+                    onClick={(event) => {
+                      setDeviceInfo({
+                        ...deviceInfo,
+                        subUsers: deviceInfo.subUsers.filter(
+                          (subUser) => subUser !== user
+                        ),
+                      });
+                    }}
+                  >
+                    X
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <div className="user-login-form-div">
+              <p>{completeDeviceInfo.userEmail}</p>
+            </div>
+          )}
           <div className="add-device-form-div">
-            <button
-              className="add-device-form-div-button"
-              onClick={handleOnClick}
-            >
-              Edit device
-            </button>
+            {completeDeviceInfo.owned ? (
+              <button
+                className="add-device-form-div-button"
+                onClick={handleOnClick}
+              >
+                Edit device
+              </button>
+            ) : null}
+
             <button
               className="add-device-cancel-form-div-button"
               onClick={(event) => {
@@ -85,6 +117,14 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
               }}
             >
               Cancel
+            </button>
+          </div>
+          <div className="add-device-form-div">
+            <button
+              className="remove-device-form-div-button"
+              onClick={removeDevice}
+            >
+              {completeDeviceInfo.owned ? 'Free' : 'Remove'}
             </button>
           </div>
         </form>

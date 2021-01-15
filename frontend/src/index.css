@@ -13,10 +13,29 @@ body {
 
 #root {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
   width: 100vw;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 30px;
+  background-color: rgb(47, 137, 255);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.navbar-component {
+  padding: 10px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .app-container {
@@ -51,6 +70,7 @@ body {
   padding: 10px;
   /* margin-bottom: 5px; */
   margin-bottom: -1px;
+  position: relative;
 }
 
 .device-button-container {
@@ -173,7 +193,23 @@ body {
   border: 1px solid #ccc;
   border-radius: 3px;
   width: 400px;
-  height: 400px;
+  height: 450px;
+  box-shadow: 0 8px 6px -6px #ddd;
+}
+
+.user-welcome-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 100px;
+  box-shadow: 0 8px 6px -6px #ddd;
+}
+
+.user-recovery-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 200px;
   box-shadow: 0 8px 6px -6px #ddd;
 }
 
@@ -200,7 +236,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 90%;
   padding: 10px;
   justify-content: center;
   align-items: center;
@@ -314,4 +350,151 @@ body {
 .user-login-lost-credentials-container {
   margin-top: 10px;
   text-align: center;
+}
+
+.dashboard-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-options-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px;
+  height: fit-content;
+  background-color: cornflowerblue;
+}
+
+.add-device-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 250px;
+  box-shadow: 0 8px 6px -6px #ddd;
+  position: fixed;
+  top: 20%;
+  background-color: white;
+  z-index: 2;
+  overflow-y: scroll;
+}
+
+.edit-device-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 400px;
+  height: 400px;
+  box-shadow: 0 8px 6px -6px #ddd;
+  position: fixed;
+  top: 20%;
+  background-color: white;
+  z-index: 2;
+  overflow-y: scroll;
+}
+
+.user-feature-disabler-class {
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+
+.add-device-form-div-button {
+  width: 120px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  background-color: rgb(26, 115, 232);
+  border: none;
+  outline: none;
+}
+
+.add-device-form-div-button:hover {
+  border: 1px solid #666;
+  background-color: rgb(1, 91, 209);
+}
+
+.add-device-form-div-button:active {
+  border: 1px solid #666;
+  background-color: rgb(39, 130, 250);
+}
+
+.add-device-cancel-form-div-button {
+  width: 120px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  outline: none;
+  border: 1px solid rgb(206, 206, 206);
+}
+
+.add-device-cancel-form-div-button:hover {
+  border: 1px solid #666;
+  background-color: #eee;
+}
+
+.add-device-cancel-div-button:active {
+  border: 1px solid #666;
+  background-color: rgb(39, 130, 250);
+}
+
+.add-device-form-div {
+  margin-bottom: 10px;
+  width: fit-content;
+  text-align: center;
+  height: 40px;
+  width: 280px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-options-buttons {
+  border: none;
+  background-color: white;
+  outline: none;
+  position: absolute;
+  bottom: 5px;
+  right: 15px;
+  border: 1px solid #eee;
+}
+
+.device-options-buttons:hover {
+  border: 1px solid #ccc;
+  background-color: #eee;
+}
+
+.device-options-buttons:active {
+  border: 1px solid #ccc;
+  background-color: rgb(170, 0, 0);
+}
+
+.remove-device-form-div-button {
+  width: 120px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  background-color: #8b2e34;
+  border: 1px solid #eee;
+  outline: none;
+  color: white;
+}
+
+.remove-device-form-div-button:hover {
+  border: 1px solid #888;
+}
+
+.remove-device-form-div-button:active {
+  border: 1px solid #888;
 }

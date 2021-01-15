@@ -25,14 +25,14 @@ function AddDevice({ close, fetchUserData, ...rest }) {
   function handleOnChange(event) {
     setDeviceInfo({
       ...deviceInfo,
-      [event.target.name]: event.target.value,
+      [event.currentTarget.name]: event.currentTarget.value,
     });
   }
 
-  function handleOnClick(event) {
+  async function handleOnClick(event) {
     const token = localStorage.getItem('iot-server-token');
     event.preventDefault();
-    fetch('/api/devices', {
+    await fetch('/api/devices', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

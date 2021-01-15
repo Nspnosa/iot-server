@@ -11,10 +11,10 @@ function ResetAccount({ userLogged }) {
   const props = useSpring({ opacity: 1, from: { opacity: 0 } });
 
   function handleInputChange(event) {
-    setFormData(event.target.value);
+    setFormData(event.currentTarget.value);
   }
 
-  function handleOnClick(event) {
+  async function handleOnClick(event) {
     fetch('/api/reset', {
       method: 'POST',
       headers: {
