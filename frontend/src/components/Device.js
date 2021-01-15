@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import EditDevice from './EditDevice';
 
-function DeviceComponent({ deviceID, deviceName, deviceInfo, ...rest }) {
+function DeviceComponent({
+  deviceID,
+  deviceName,
+  deviceInfo,
+  fetchUserData,
+  ...rest
+}) {
   const [status, setStatus] = useState(false);
   const [stateOn, setStateOn] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
@@ -14,6 +20,7 @@ function DeviceComponent({ deviceID, deviceName, deviceInfo, ...rest }) {
         <EditDevice
           completeDeviceInfo={deviceInfo}
           setOpenOptions={setOpenOptions}
+          fetchUserData={fetchUserData}
         />
       )}
       <animated.div style={props} className="device-container">

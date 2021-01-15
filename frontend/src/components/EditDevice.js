@@ -1,7 +1,12 @@
 import { useEffect, useReducer, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 
-function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
+function EditDevice({
+  setOpenOptions,
+  completeDeviceInfo,
+  fetchUserData,
+  ...rest
+}) {
   const [deviceInfo, setDeviceInfo] = useState({
     deviceName: completeDeviceInfo.deviceName,
     newUser: '',
@@ -37,6 +42,7 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
         if (status !== 200) {
           setMsg(data.msg);
         } else {
+          fetchUserData();
           //trigger a rerender of devices
         }
       });
@@ -73,6 +79,19 @@ function EditDevice({ setOpenOptions, completeDeviceInfo, ...rest }) {
               />
             </div>
           ) : null}
+
+          <div
+            className="user-login-form-div"
+            style={{ height: 20, marginBottom: 0 }}
+          >
+            <p style={{ margin: 0 }}>
+              {!completeDeviceInfo.owned ? <b>Owned by:</b> : null}
+              {completeDeviceInfo.owned &&
+              completeDeviceInfo.subUsers.length ? (
+                <b>Shared with:</b>
+              ) : null}
+            </p>
+          </div>
 
           {completeDeviceInfo.owned ? (
             deviceInfo.subUsers.map((user, index) => {

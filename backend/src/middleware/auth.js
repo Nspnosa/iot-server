@@ -5,7 +5,6 @@ const User = require('../models/User');
 const arrayOfAllowedPaths = ['/signup', '/login', '/loginrecovery'];
 module.exports = async (req, res, next) => {
   try {
-    console.log(req.body);
     let token;
     let decodedToken;
 

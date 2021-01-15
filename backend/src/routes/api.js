@@ -12,8 +12,6 @@ const { json } = require('express');
 async function sendEmailVerification(userID, userEmail) {
   //generate token for email
   const emailToken = jwt.sign({ _id: userID }, process.env.JWT_SECRET);
-  console.log(process.env.VERIFICATION_EMAIL);
-  console.log(process.env.VERIFICATION_PASS);
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -49,9 +47,7 @@ router.post('/signup', async (req, res) => {
   const validationRes = signUpSchema.validate(req.body);
 
   if (validationRes.error) {
-    validationRes.error.details.forEach((element) => {
-      console.log(element.message);
-    });
+    validationRes.error.details.forEach((element) => {});
     return res
       .status(400)
       .json({ msg: `${validationRes.error.details[0].message}` });
@@ -141,7 +137,6 @@ router.get('/devices', async (req, res) => {
     device.subUsers = [userFromDB.email];
     return device;
   });
-  console.log({ devices: [...ownedDevicesModified, ...sharedDevicesModified] });
   return res.json({
     msg: '',
     devices: [...ownedDevicesModified, ...sharedDevicesModified],
@@ -155,7 +150,6 @@ const createDeviceSchema = Joi.object({
 });
 
 router.post('/devices', async (req, res) => {
-  console.log(req.body);
   const validationRes = createDeviceSchema.validate(req.body);
 
   if (validationRes.error) {
@@ -181,7 +175,7 @@ router.post('/devices', async (req, res) => {
     deviceID: req.body.deviceID,
     user: userID,
     type: deviceFromPool.deviceType,
-    userEmail: userInfo.userEmail,
+    userEmail: userInfo.email,
   });
 
   await newDevice.save();
@@ -191,7 +185,11 @@ router.post('/devices', async (req, res) => {
 });
 
 async function deviceOwnedByUser(userID, deviceID) {
-  let device = await Device.findOne({ deviceID: deviceID });
+  let [device, userInfo] = await Promise.all([
+    Device.findOne({ deviceID: deviceID }),
+    User.findById(userID),
+  ]);
+
   let owned = false;
   let subOwned = false;
 
@@ -203,18 +201,22 @@ async function deviceOwnedByUser(userID, deviceID) {
     owned = true;
   }
 
-  if (device.subUsers.find((user, index) => user === userID)) {
+  if (device.subUsers.find((user, index) => user === userInfo.email)) {
+    //subusers are emails
     // device.subUsers = [user];
     subOwned = true;
   }
 
-  return [owned, subOwned, device];
+  return [owned, subOwned, device, userInfo];
 }
 
 router.get('/devices/:id', async (req, res) => {
   const userID = res.locals._id;
   const deviceID = req.params.id;
-  const [owned, subOwned, device] = await deviceOwnedByUser(userID, deviceID);
+  const [owned, subOwned, device, userInfo] = await deviceOwnedByUser(
+    userID,
+    deviceID
+  );
 
   if (!device || (!owned && !subOwned)) {
     return res.status(400).json({ msg: 'unknown device id' });
@@ -222,7 +224,7 @@ router.get('/devices/:id', async (req, res) => {
 
   if (subOwned) {
     //only show the one subuser
-    device.subUsers = [userID];
+    device.subUsers = [userInfo.email];
   }
 
   return res.status(200).json(device);
@@ -232,11 +234,14 @@ router.delete('/devices/:id', async (req, res) => {
   const userID = res.locals._id;
   const deviceID = req.params.id;
 
-  const [owned, subOwned, device] = await deviceOwnedByUser(userID, deviceID);
+  const [owned, subOwned, device, userInfo] = await deviceOwnedByUser(
+    userID,
+    deviceID
+  );
 
   if (subOwned) {
     //if this is not the main user,  only the user is removed
-    device.subUsers = device.subUsers.filter((user) => user !== userID);
+    device.subUsers = device.subUsers.filter((user) => user !== userInfo.email);
     await device.save();
     device.subUsers = [];
     return res.status(200).json({ msg: 'device removed', device });
@@ -323,8 +328,6 @@ router.get('/verifyemail/:token', async (req, res) => {
     const url = `http://${process.env.HOST}:${process.env.PORT_FRONT_END}/login`;
     const decodedToken = jwt.verify(req.params.token, process.env.JWT_SECRET);
     const dbUser = await User.findById(decodedToken._id);
-    console.log(decodedToken);
-    console.log(dbUser);
     if (dbUser.verified) {
       return res.redirect(url);
     }
@@ -393,7 +396,6 @@ router.post('/loginrecovery', async (req, res) => {
 
     return res.json({ msg: `Recovery email sent to ${email}` });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ msg: 'internal error generating recovery data' });
@@ -415,7 +417,6 @@ router.post('/reset', async (req, res) => {
 
     const url = `http://${process.env.HOST}:${process.env.PORT_FRONT_END}/login`;
     const dbUser = await User.findById(res.locals._id, { password: 1 });
-    console.log(dbUser);
     dbUser.password = bcrypt.hashSync(req.body.password, 10);
     await dbUser.save();
     return res.json({ msg: 'password reset' });

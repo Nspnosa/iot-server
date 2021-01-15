@@ -65,6 +65,7 @@ function Dashboard() {
                 deviceName={device.deviceName}
                 deviceInfo={device}
                 key={device._id}
+                fetchUserData={fetchUserData}
               />
             );
           })}
