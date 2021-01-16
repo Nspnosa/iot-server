@@ -22,7 +22,6 @@ function UserLogin({ userLogged, setUserLogged, ...rest }) {
 
   async function handleOnClick(event) {
     event.preventDefault();
-    console.log('button clicked');
     await fetch('/api/login', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -36,7 +35,6 @@ function UserLogin({ userLogged, setUserLogged, ...rest }) {
       })
       .then(([data, status]) => {
         if (status === 200) {
-          console.log(remember);
           if (remember) {
             localStorage.setItem('iot-server-token', data.token);
           }

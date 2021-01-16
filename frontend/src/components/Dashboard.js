@@ -11,7 +11,6 @@ function Dashboard() {
   const [devices, setDevices] = useState([]);
 
   const token = localStorage.getItem('iot-server-token');
-  console.log(token);
   async function fetchUserData() {
     await fetch('/api/devices', {
       method: 'GET',
@@ -36,7 +35,6 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    console.log('effect triggered');
     fetchUserData();
   }, [closeDisplayAddDevice]);
 

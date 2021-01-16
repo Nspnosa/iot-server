@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 
 function EditDevice({
@@ -12,12 +12,24 @@ function EditDevice({
     newUser: '',
     subUsers: completeDeviceInfo.subUsers,
   });
-
   const token = localStorage.getItem('iot-server-token');
   const [msg, setMsg] = useState('');
+  const [enableEditButton, setEnableEditButton] = useState(false);
+
   const props = useSpring({ opacity: 1, from: { opacity: 0 } });
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (
+      deviceInfo.deviceName !== completeDeviceInfo.deviceName ||
+      deviceInfo.newUser !== ''
+    ) {
+      //activate edit device button
+      setEnableEditButton(true);
+    } else {
+      //deactivate
+      setEnableEditButton(false);
+    }
+  }, [deviceInfo]);
 
   function handleOnChange(event) {
     setDeviceInfo({
@@ -29,7 +41,6 @@ function EditDevice({
   async function handleOnClick(event) {}
 
   async function removeDevice(event) {
-    console.log('remove device');
     event.preventDefault();
     await fetch(`/api/devices/${completeDeviceInfo.deviceID}`, {
       method: 'DELETE',
@@ -43,12 +54,38 @@ function EditDevice({
           setMsg(data.msg);
         } else {
           fetchUserData();
-          //trigger a rerender of devices
         }
       });
   }
 
-  console.log('hello');
+  async function editDevice(event) {
+    event.preventDefault();
+    let bodyObject = {};
+    if (deviceInfo.deviceName !== completeDeviceInfo.deviceName) {
+      bodyObject.deviceName = deviceInfo.deviceName;
+    }
+    if (deviceInfo.newUser) {
+      bodyObject.subUser = deviceInfo.newUser;
+    }
+    await fetch(`/api/devices/${completeDeviceInfo.deviceID}`, {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ ...bodyObject }),
+    })
+      .then((data) => Promise.all([data.json(), data.status]))
+      .then(([data, status]) => {
+        if (status !== 200) {
+          setMsg(data.msg);
+        } else {
+          fetchUserData();
+          setEnableEditButton(false);
+        }
+      });
+  }
+
   return (
     <>
       <div className="user-feature-disabler-class"></div>
@@ -121,8 +158,11 @@ function EditDevice({
           <div className="add-device-form-div">
             {completeDeviceInfo.owned ? (
               <button
-                className="add-device-form-div-button"
-                onClick={handleOnClick}
+                className={`add-device-form-div-button${
+                  !enableEditButton ? '-disabled' : ''
+                }`}
+                onClick={editDevice}
+                disabled={!enableEditButton}
               >
                 Edit device
               </button>
@@ -135,7 +175,7 @@ function EditDevice({
                 setOpenOptions(false);
               }}
             >
-              Cancel
+              Close
             </button>
           </div>
           <div className="add-device-form-div">

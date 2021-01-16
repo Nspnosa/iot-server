@@ -266,6 +266,7 @@ router.delete('/devices/:id', async (req, res) => {
 const editDeviceSchema = Joi.object({
   deviceName: Joi.string().max(20).optional(),
   subUser: Joi.string().email().optional(),
+  userRemoved: Joi.string().email().optional(),
 });
 
 router.put('/devices/:id', async (req, res) => {
@@ -276,7 +277,7 @@ router.put('/devices/:id', async (req, res) => {
       .json({ msg: `${validationRes.error.details[0].message}` });
   }
 
-  if (!req.body.deviceID && !req.body.subUser) {
+  if (!req.body.deviceName && !req.body.subUser && !req.body.userRemoved) {
     return res.status(400).json({ msg: 'no data to modify' });
   }
 
@@ -308,10 +309,10 @@ router.put('/devices/:id', async (req, res) => {
       return res.status(400).json({ msg: 'user not yet registered' });
     } else {
       //don't push user if already registered
-      if (device.subUsers.includes(subUser._id)) {
+      if (device.subUsers.includes(subUser.email)) {
         return res.status(400).json({ msg: 'Already shared with this user' });
       }
-      device.subUsers.push(subUser.id);
+      device.subUsers.push(subUser.email);
     }
   }
 

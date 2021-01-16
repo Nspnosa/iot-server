@@ -13,7 +13,6 @@ function DeviceComponent({
   const [stateOn, setStateOn] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
   const props = useSpring({ opacity: 1, from: { opacity: 0 } });
-  console.log(deviceInfo);
   return (
     <>
       {!openOptions ? null : (

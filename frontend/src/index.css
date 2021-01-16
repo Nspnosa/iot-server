@@ -417,6 +417,16 @@ body {
   outline: none;
 }
 
+.add-device-form-div-button-disabled {
+  width: 120px;
+  height: 40px;
+  font-weight: 200;
+  font-size: medium;
+  background-color: gray;
+  border: none;
+  outline: none;
+}
+
 .add-device-form-div-button:hover {
   border: 1px solid #666;
   background-color: rgb(1, 91, 209);
